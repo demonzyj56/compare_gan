@@ -44,6 +44,13 @@ class DatasetsTest(tf.test.TestCase):
     datasets.load_celeba("celeba", "train", 1, 10)
     datasets.load_lsun("lsun", "train", 1, 10)
     datasets.load_celebahq("celebahq128", "train", 1, 10)
+    for class_name in datasets.CLASS_NAMES["mnist"]:
+      datasets.load_mnist("mnist:{}".format(class_name), "train", 1, 10)
+    for class_name in datasets.CLASS_NAMES["fashion-mnist"]:
+      datasets.load_fashion_mnist("fashion_mnist:{}".format(class_name),
+                                  "train", 1, 10)
+    for class_name in datasets.CLASS_NAMES["cifar10"]:
+      datasets.load_cifar10("cifar10:{}".format(class_name), "train", 1, 10)
 
   def get_element_and_verify_shape(self, dataset, expected_shape):
     element = dataset.make_one_shot_iterator().get_next()
@@ -67,6 +74,27 @@ class DatasetsTest(tf.test.TestCase):
     self.get_element_and_verify_shape(
         datasets.load_cifar10("cifar10", "dev", 1, 10),
         (32, 32, 3))
+
+  def test_mnist_one_class(self):
+    for class_name in datasets.CLASS_NAMES["mnist"]:
+      dataset_name = "mnist:{}".format(class_name)
+      self.get_element_and_verify_shape(
+          datasets.load_mnist(dataset_name, "dev", 1, 10),
+          (28, 28, 1))
+
+  def test_fashion_mnist_one_class(self):
+    for class_name in datasets.CLASS_NAMES["fashion-mnist"]:
+      dataset_name = "fashion_mnist:{}".format(class_name)
+      self.get_element_and_verify_shape(
+          datasets.load_fashion_mnist(dataset_name, "dev", 1, 10),
+          (28, 28, 1))
+
+  def test_cifar10_one_class(self):
+    for class_name in datasets.CLASS_NAMES["cifar10"]:
+      dataset_name = "cifar10:{}".format(class_name)
+      self.get_element_and_verify_shape(
+          datasets.load_cifar10(dataset_name, "dev", 1, 10),
+          (32, 32, 3))
 
   def test_celeba(self):
     self.get_element_and_verify_shape(

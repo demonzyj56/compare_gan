@@ -33,6 +33,14 @@ flags.DEFINE_string(
     "/tmp/datasets/",
     "Folder which contains all datasets.")
 
+CLASS_NAMES = {
+    'mnist': ('0', '1', '2', '3', '4', '5', '6', '7', '8', '9'),
+    'cifar10': ('airplane', 'automobile', 'bird', 'cat', 'deer',
+                'dog', 'frog', 'horse', 'ship', 'truck'),
+    'fashion-mnist': ('t-shirt', 'trouser', 'pullover', 'dress', 'coat',
+                      'sandal', 'shirt', 'sneaker', 'bag', 'ankle-boot'),
+}
+
 
 def load_convex(dataset_name):
   folder_path = os.path.join(FLAGS.dataset_root, "convex")
@@ -120,7 +128,9 @@ def load_fake(dataset_name, split_name, num_threads, buffer_size):
 
 
 def load_mnist(dataset_name, split_name, num_threads, buffer_size):
-  del dataset_name
+  names = dataset_name.split(':')
+  if len(names) > 1:
+    class_idx = CLASS_NAMES['mnist'].index(names[-1])
   if split_name == "train":
     filenames = get_sharded_filenames("image_mnist-train", 10)
   else:
@@ -131,34 +141,49 @@ def load_mnist(dataset_name, split_name, num_threads, buffer_size):
       buffer_size=buffer_size,
       num_parallel_reads=num_threads).map(
           unpack_png_image, num_parallel_calls=num_threads)
+  if len(names) > 1:
+    dataset = dataset.filter(lambda _, y: tf.equal(y, class_idx))
+  return dataset
 
 
 def load_fashion_mnist(dataset_name, split_name, num_threads, buffer_size):
-  del dataset_name
+  names = dataset_name.split(':')
+  if len(names) > 1:
+    class_idx = CLASS_NAMES['fashion-mnist'].index(names[-1])
   if split_name == "train":
     filenames = get_sharded_filenames("image_fashion_mnist-train", 10)
   else:
     filenames = get_sharded_filenames("image_fashion_mnist-dev", 1)
   # Image dim: 28,28,1 range: 0..1 label: int32
-  return tf.data.TFRecordDataset(
+  dataset = tf.data.TFRecordDataset(
       filenames,
       buffer_size=buffer_size,
       num_parallel_reads=num_threads).map(
           unpack_png_image, num_parallel_calls=num_threads)
+  if len(names) > 1:
+    dataset = dataset.filter(lambda _, y: tf.equal(y, class_idx))
+  return dataset
 
 
 def load_cifar10(dataset_name, split_name, num_threads, buffer_size):
-  del dataset_name
+  # dataset names are joined with ':'
+  names = dataset_name.split(':')
+  if len(names) > 1:
+    class_idx = CLASS_NAMES['cifar10'].index(names[-1])
   if split_name == "train":
     filenames = get_sharded_filenames("image_cifar10-train", 10)
   else:
     filenames = get_sharded_filenames("image_cifar10-dev", 1)
   # Image dim: 32,32,3 range: 0..1 label: int32
-  return tf.data.TFRecordDataset(
+  dataset = tf.data.TFRecordDataset(
       filenames,
       buffer_size=buffer_size,
       num_parallel_reads=num_threads).map(
           unpack_png_image, num_parallel_calls=num_threads)
+  if len(names) > 1:
+    # filter using class_idx
+    dataset = dataset.filter(lambda _, y: tf.equal(y, class_idx))
+  return dataset
 
 
 def load_celeba(dataset_name, split_name, num_threads, buffer_size):
