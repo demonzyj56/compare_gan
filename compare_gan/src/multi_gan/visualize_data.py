@@ -23,7 +23,7 @@ import os
 
 from compare_gan.src.multi_gan import dataset
 import numpy as np
-from scipy.misc import imsave
+from skimage.io import imsave
 import tensorflow as tf
 
 flags = tf.flags

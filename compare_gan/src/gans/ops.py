@@ -18,7 +18,7 @@ from __future__ import division
 from __future__ import print_function
 
 import numpy as np
-import scipy.misc
+from skimage.io import imsave
 from six.moves import map
 from six.moves import range
 import tensorflow as tf
@@ -32,7 +32,7 @@ def check_folder(log_dir):
 
 def save_images(images, image_path):
   with tf.gfile.Open(image_path, "wb") as f:
-    scipy.misc.imsave(f, images * 255.0)
+    imsave(f, (images * 255.0).astype(np.uint8))
 
 
 def gaussian(batch_size, n_dim, mean=0., var=1.):

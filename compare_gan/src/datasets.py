@@ -30,7 +30,7 @@ FLAGS = flags.FLAGS
 
 flags.DEFINE_string(
     "dataset_root",
-    "/tmp/datasets/gan_compare/",
+    "/tmp/datasets/",
     "Folder which contains all datasets.")
 
 

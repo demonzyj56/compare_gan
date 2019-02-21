@@ -15,14 +15,9 @@
 
 #!/bin/bash
 
-T2T_DATAGEN="$HOME/.local/bin/t2t-datagen"
+T2T_DATAGEN="t2t-datagen"
 DATASET_DIR="/tmp/datasets"
 TMP_DIR="/tmp"
-
-if [ ! -f ${T2T_DATAGEN?} ]; then
-  echo "tensor2tensor not found!"
-  exit 1
-fi
 
 echo "Preparing datasets (mnist, fashionmnist, cifar10, celeba) in ${DATASET_DIR?}"
 mkdir ${DATASET_DIR?}

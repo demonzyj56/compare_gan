@@ -43,6 +43,8 @@ setup(
         'protobuf',
         'six',
         'tensor2tensor',
+        'scikit-image',
+        'tensorflow_gpu',
     ],
     extras_require={
         'matplotlib': ['matplotlib>=1.5.2'],
@@ -50,8 +52,6 @@ setup(
         'pandas': ['pandas>=0.23.0'],
         'pstar': ['pstar>=0.1.6'],
         'scipy': ['scipy>=1.0.0'],
-        'tensorflow': ['tensorflow>=1.7'],
-        'tensorflow_gpu': ['tensorflow-gpu>=1.4.1'],
     },
     classifiers=[
         'Development Status :: 4 - Beta',
