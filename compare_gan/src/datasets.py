@@ -136,7 +136,7 @@ def load_mnist(dataset_name, split_name, num_threads, buffer_size):
   else:
     filenames = get_sharded_filenames("image_mnist-dev", 1)
   # Image dim: 28,28,1 range: 0..1 label: int32
-  return tf.data.TFRecordDataset(
+  dataset = tf.data.TFRecordDataset(
       filenames,
       buffer_size=buffer_size,
       num_parallel_reads=num_threads).map(
