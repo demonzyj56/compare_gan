@@ -60,6 +60,12 @@ class DatasetsTest(tf.test.TestCase):
       self.assertGreaterEqual(image.min(), 0.0)
       self.assertLessEqual(image.max(), 1.0)
 
+  def get_one_class_element_and_verify_label(self, dataset, expected_label):
+    element = dataset.make_one_shot_iterator().get_next()
+    with tf.Session() as session:
+      _, l = session.run(element)
+      self.assertEqual(l, expected_label)
+
   def test_mnist(self):
     self.get_element_and_verify_shape(
         datasets.load_mnist("mnist", "dev", 1, 10),
@@ -76,25 +82,34 @@ class DatasetsTest(tf.test.TestCase):
         (32, 32, 3))
 
   def test_mnist_one_class(self):
-    for class_name in datasets.CLASS_NAMES["mnist"]:
+    for idx, class_name in enumerate(datasets.CLASS_NAMES["mnist"]):
       dataset_name = "mnist:{}".format(class_name)
       self.get_element_and_verify_shape(
-          datasets.load_mnist(dataset_name, "dev", 1, 10),
-          (28, 28, 1))
+        datasets.load_mnist(dataset_name, "dev", 1, 10),
+        (28, 28, 1))
+      self.get_one_class_element_and_verify_label(
+        datasets.load_mnist(dataset_name, "dev", 1, 10), idx
+      )
 
   def test_fashion_mnist_one_class(self):
-    for class_name in datasets.CLASS_NAMES["fashion-mnist"]:
+    for idx, class_name in enumerate(datasets.CLASS_NAMES["fashion-mnist"]):
       dataset_name = "fashion_mnist:{}".format(class_name)
       self.get_element_and_verify_shape(
-          datasets.load_fashion_mnist(dataset_name, "dev", 1, 10),
-          (28, 28, 1))
+        datasets.load_fashion_mnist(dataset_name, "dev", 1, 10),
+        (28, 28, 1))
+      self.get_one_class_element_and_verify_label(
+        datasets.load_fashion_mnist(dataset_name, "dev", 1, 10), idx
+      )
 
   def test_cifar10_one_class(self):
-    for class_name in datasets.CLASS_NAMES["cifar10"]:
+    for idx, class_name in enumerate(datasets.CLASS_NAMES["cifar10"]):
       dataset_name = "cifar10:{}".format(class_name)
       self.get_element_and_verify_shape(
-          datasets.load_cifar10(dataset_name, "dev", 1, 10),
-          (32, 32, 3))
+        datasets.load_cifar10(dataset_name, "dev", 1, 10),
+        (32, 32, 3))
+      self.get_one_class_element_and_verify_label(
+        datasets.load_cifar10(dataset_name, "dev", 1, 10), idx
+      )
 
   def test_celeba(self):
     self.get_element_and_verify_shape(
