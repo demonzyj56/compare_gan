@@ -24,9 +24,11 @@ from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 
+import copy
 import collections
 
 from compare_gan.src.gans import consts
+from compare_gan.src.datasets import CLASS_NAMES
 
 
 ParamInfo = collections.namedtuple(
@@ -403,6 +405,13 @@ DATASET_PARAMS = {
         "eval_test_samples": 3000
     },
 }
+for dataset in ["mnist", "fashion-mnist", "cifar10"]:
+  for class_name in CLASS_NAMES[dataset]:
+    name = ":".join([dataset, class_name])
+    value = copy.deepcopy(DATASET_PARAMS[dataset])
+    # Setting a small test samples; true value to be determined.
+    value.update({"dataset_name": name, "eval_test_samples": 50})
+    DATASET_PARAMS[name] = value
 
 
 def GetDatasetParameters(dataset_name):

@@ -67,6 +67,9 @@ DATASETS = {"mnist": datasets.load_mnist,
             "fake": datasets.load_fake,
             "celebahq128": datasets.load_celebahq,
             "lsun-bedroom": datasets.load_lsun}
+for dataset in ["mnist", "fashion-mnist", "cifar10"]:
+  for class_name in datasets.CLASS_NAMES[dataset]:
+    DATASETS[":".join([dataset, class_name])] = DATASETS[dataset]
 
 flags = tf.flags
 FLAGS = flags.FLAGS
